@@ -120,9 +120,16 @@ public class MetaData {
     }
 
     // 添加方法
-    public void addGroupNumAndGroupIdxToBlocks(int groupNum, int groupIdx, List<Integer> blocks) {
+    public static void addGroupNumAndGroupIdxToBlocks(int groupNum, int groupIdx, int blockIdx) {
         GroupKey key = new GroupKey(groupNum, groupIdx);
-        groupNum_and_groupIdx_to_blocks.put(key, blocks);
+        // 检查是否存在该键，如果不存在则创建新的列表
+        if (!groupNum_and_groupIdx_to_blocks.containsKey(key)) {
+            groupNum_and_groupIdx_to_blocks.put(key, new ArrayList<>());
+        }
+
+        // 获取键对应的列表，并添加元素
+        List<Integer> blocks = groupNum_and_groupIdx_to_blocks.get(key);
+        blocks.add(blockIdx);
     }
 
     // 查询方法
@@ -132,7 +139,7 @@ public class MetaData {
     }
 
     // 自定义复合键对象，表示分区组数和分区内组索引
-    class GroupKey {
+    static class GroupKey {
         private final int groupNum;
         private final int groupIdx;
 
