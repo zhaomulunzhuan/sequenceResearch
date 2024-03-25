@@ -1,0 +1,10 @@
+D:\SequenceSearch\InputDatasets\GCF_000005825.2_ASM582v2_genomic.fna
+D:\SequenceSearch\InputDatasets\GCF_000005845.2_ASM584v2_genomic.fna
+D:\SequenceSearch\InputDatasets\GCF_000006605.1_ASM660v1_genomic.fna
+D:\SequenceSearch\InputDatasets\GCF_000006625.1_ASM662v1_genomic.fna
+D:\SequenceSearch\InputDatasets\GCF_000006645.1_ASM664v1_genomic.fna
+D:\SequenceSearch\InputDatasets\GCF_000006685.1_ASM668v1_genomic.fna
+D:\SequenceSearch\InputDatasets\GCF_000006725.1_ASM672v1_genomic.fna
+D:\SequenceSearch\InputDatasets\GCF_000006745.1_ASM674v1_genomic.fna
+D:\SequenceSearch\InputDatasets\GCF_000006765.1_ASM676v1_genomic.fna
+D:\SequenceSearch\InputDatasets\GCF_000006785.2_ASM678v2_genomic.fna
