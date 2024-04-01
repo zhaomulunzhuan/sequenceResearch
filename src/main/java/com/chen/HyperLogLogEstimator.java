@@ -28,15 +28,14 @@ public class HyperLogLogEstimator {//基数估计
         try(BufferedWriter writer=new BufferedWriter((new FileWriter(cardinalityFile)))){
             for (File file : files) {
                 if (file.isFile()) {
-//                    System.out.println(MetaData.getIdxByName(file.getName()));
-//                    System.out.println("File: " + file.getName() + ", Estimated Kmer Cardinality: " + estimateFileKmerCardinality(file));
+                    //数据集索引
                     int index = MetaData.getIdxByName(file.getName());
                     long cardinality = estimateFileKmerCardinality(file);
                     String line = index + "," + cardinality; // 将索引和基数连接为一行字符串
+//                    System.out.println("File: " + file.getName() + ", Estimated Kmer Cardinality: " + estimateFileKmerCardinality(file));
                     //写入数据集索引和对对应基数
                     writer.write(line);
                     writer.newLine();
-//                    System.out.println(line);
 //                System.out.println("File: " + file.getName() + ", Exact Kmer Cardinality: " + calculateExactKmerCardinality(file));
                 }
             }

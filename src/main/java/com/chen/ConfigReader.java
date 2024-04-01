@@ -44,4 +44,35 @@ public class ConfigReader {
             System.err.println("无法保存配置文件: " + e.getMessage());
         }
     }
+
+    public static void saveConfigFile() throws IOException {
+        // 构造目标文件路径
+        String configFile=ConfigReader.getProperty("project-root-directory")+CONFIG_FILE_PATH;
+
+        // 读取配置文件内容
+        try (InputStream inputStream = ConfigReader.class.getResourceAsStream(CONFIG_FILE_PATH)) {
+            // 创建输出流
+            try (OutputStream outputStream = new FileOutputStream(configFile)) {
+                // 将输入流中的内容复制到目标文件中
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+        }
+    }
+
+    public static void loadProperties(String configFile) {
+        properties = new Properties();
+        try (InputStream inputStream = new FileInputStream(configFile)) {
+            if (inputStream != null) {
+                properties.load(inputStream);
+            } else {
+                System.err.println("无法找到配置文件");
+            }
+        } catch (IOException e) {
+            System.err.println("无法读取配置文件: " + e.getMessage());
+        }
+    }
 }

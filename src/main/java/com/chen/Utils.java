@@ -5,6 +5,7 @@ import org.apache.datasketches.hash.MurmurHash3;
 import org.apache.datasketches.hash.XxHash;
 import org.apache.datasketches.memory.Memory;
 
+import com.google.common.hash.Hashing;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.charset.StandardCharsets;
@@ -39,7 +40,6 @@ public class Utils {
                             return null;
                         }
                     });
-//                    System.out.println(group_nums);
                     MetaData.addGroupNumToSamples(group_nums,index);
 //                    System.out.println("Index:"+index+",Cardinality:"+cardinality);
                     if (writer!=null){
@@ -76,19 +76,17 @@ public class Utils {
         getCardinality(nameidx_to_cardinality,b);
     }
 
-    //传递kmer key，哈希函数个数k，布隆过滤器大小range，随机种子seed，返回k个哈希值
-    public static List<Long> myHash(String key,int k,int range){
-        List<Long> hashValues=new ArrayList<>();
 
-        // Convert key to bytes
-        byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
+    public static List<Long> myHash(String key, int k, int range) {
+        List<Long> hashValues = new ArrayList<>();
 
+        // Iterate over k hash functions
         for (int i = 0; i < k; i++) {
-            // Calculate hash using XxHash
-            long hash = XxHash.hash(Memory.wrap(keyBytes), 0, keyBytes.length, i); // 64-bit hash
+            // Calculate hash using MurmurHash algorithm
+            long hash = Hashing.murmur3_128(i).hashString(key, StandardCharsets.UTF_8).asLong();
 
             // Map hash value to the specified range
-            long mappedHash = (int) Math.floorMod(hash, range);
+            long mappedHash = Math.abs(hash) % range;
 
             hashValues.add(mappedHash);
         }
@@ -121,6 +119,16 @@ public class Utils {
                 };
             }
         };
+    }
+
+    public static void printBitSet(BitSet bitSet) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        for (int i = 0; i < bitSet.length(); i++) {
+            sb.append(bitSet.get(i) ? "1" : "0");
+        }
+        sb.append("}");
+        System.out.println(sb.toString());
     }
 
 }
