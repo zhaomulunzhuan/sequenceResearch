@@ -27,7 +27,7 @@ public class Insert {
         if (!MetaData.addDataset(datasetpath)){//将添加的数据集相应信息添加到元数据中
             //数据集名称
             String datasetName = datasetpath.substring(datasetpath.lastIndexOf("\\") + 1);
-            System.out.println("插入数据集"+datasetName);
+//            System.out.println("插入数据集"+datasetName);
             //数据集索引
             int dataset_indxe=MetaData.getIdxByName(datasetName);
             int kmer_size= Integer.parseInt(ConfigReader.getProperty("kmer-size"));
@@ -52,6 +52,7 @@ public class Insert {
                 for(int i=0;i<blockList.size();i++){
                     Block block=index.getBlock(blockList.get(i));//逐个快进行检查
                     if(!block.isFull()){//当前块未满
+//                        System.out.println("块"+i+"未满");
                         insert_block=i;//插入位置的组内块索引为i，即将要插入每个组的索引为i的块中
 
                         Object[] result = block.findInsertposition();
@@ -64,19 +65,21 @@ public class Insert {
                             //这个段的每个组的索引为i的块都要添加一个新的布隆过滤器
                             for(int j=0;j<group_nums;j++){
                                 List<Integer> needAddBlockList=MetaData.getBlocksByGroupNumAndGroupIdx(group_nums,j);
-                                System.out.println("组数为"+group_nums+"的段的"+j+"组所占用的块索引列表"+needAddBlockList);
+//                                System.out.println("组数为"+group_nums+"的段的"+j+"组所占用的块索引列表"+needAddBlockList);
                                 Block needAddBlock=index.getBlock(needAddBlockList.get(i));
-                                System.out.println(j+"组"+"需要添加布隆过滤器的块当前信息");
-                                needAddBlock.printBlockInfo();
+//                                System.out.println(j+"组"+"需要添加布隆过滤器的块当前信息");
+//                                needAddBlock.printBlockInfo();
                                 needAddBlock.addBF();
                             }
                         }
                         insert_bf=position;
                         insertFlag=true;
+//                        System.out.println("块"+i+"的插入位置是"+position);
+                        break;//找到一个可插入的块，不需要继续检查
                     }
                 }
                 if(!insertFlag){//如果这个段的0号组所占用的块都没有找到插入位置（所有组结构一致）,则需要创建新块
-                    System.out.println(datasetName+"需要存储的段没有空余位置");
+//                    System.out.println(datasetName+"需要存储的段没有空余位置");
                     insert_block=blockList.size();
                     for(int i=0;i<group_nums;i++){
                         int block_index=index.getBlockList().size();//新块的全局块索引
@@ -88,7 +91,7 @@ public class Insert {
                     insert_bf=0;//插入的块内布隆过滤器索引为0
                 }
             }else{//当前数据集要存储的段还未创建
-                System.out.println(datasetName+"需要存储的段还未创建");
+//                System.out.println(datasetName+"需要存储的段还未创建");
                 insert_block=0;
                 for(int i=0;i<group_nums;i++){
                     int block_index=index.getBlockList().size();
@@ -99,7 +102,7 @@ public class Insert {
                 }
                 insert_bf=0;
             }
-            System.out.println("在每组中的插入位置："+insert_block+"索引块中的"+insert_bf+"索引布隆过滤器");
+//            System.out.println("在每组中的插入位置："+insert_block+"索引块中的"+insert_bf+"索引布隆过滤器");
             try (BufferedReader reader=new BufferedReader(new FileReader(kmerdataPath))){
                 String kmer;
                 while((kmer=reader.readLine())!=null){
@@ -111,7 +114,7 @@ public class Insert {
             //插入的数据集在这个段中存储的位置，即在这个段对应的数据集索引列表中的位置索引
             int block_max_size= Integer.parseInt(ConfigReader.getProperty("Block-max-size"));
             int insertpositon=insert_block*block_max_size+insert_bf;
-            System.out.println("插入的数据集"+datasetName+"在这个段存储的数据集列表中索引为:"+insertpositon);
+//            System.out.println("插入的数据集"+datasetName+"在这个段存储的数据集列表中索引为:"+insertpositon);
             MetaData.insertSampleToGroupNumToSamples(group_nums,insertpositon,dataset_indxe);
         }
     }

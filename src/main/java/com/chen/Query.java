@@ -14,7 +14,6 @@ public class Query {
         Exactquerykmers("D:\\SequenceSearch\\query.txt");
     }
 
-
     public static void Exactquerykmers(String filePath){//查询一个输入文件，文件里面是一段长序列，返回包含这个序列所有kmers的数据集
         int kmersize= Integer.parseInt(ConfigReader.getProperty("kmer-size"));
         String sequence = ""; // 初始化sequence变量
@@ -40,8 +39,12 @@ public class Query {
             result.retainAll(querykmer(kmer));
         }
         System.out.println("包含输入文件中查询序列的数据集");
-        for (String datasetName:result){
-            System.out.println(datasetName);
+        if (result.size()==0){
+            System.out.println("未查询到包含查询序列的数据集");
+        }else {
+            for (String datasetName:result){
+                System.out.println(datasetName);
+            }
         }
     }
 
@@ -63,10 +66,14 @@ public class Query {
             List<String> cur_datasetResult = index.searchBlocks(blockList, datasetIdxs, kmer);
             results.addAll(cur_datasetResult);
         }
-        System.out.println(kmer+"查询到数据集：");
-        for(String dataset:results){
-            System.out.println(dataset);
-        }
+//        System.out.println(kmer+"查询到数据集：");
+//        if (results.size()==0){
+//            System.out.println("未查询到包含查询元素的数据集");
+//        }else {
+//            for(String dataset:results){
+//                System.out.println(dataset);
+//            }
+//        }
         return results;
     }
 

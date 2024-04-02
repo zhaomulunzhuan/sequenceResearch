@@ -12,8 +12,6 @@ public class BloomFilter implements Serializable {
     private static final long serialVersionUID = 1L;
     private int size;
     private int k;
-
-
     private BitSet bitarray;
     public BloomFilter() {
         int m= Integer.parseInt(ConfigReader.getProperty("BF-size"));

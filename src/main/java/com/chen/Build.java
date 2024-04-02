@@ -16,7 +16,7 @@ public class Build {
 
     public static void buildIndex() throws IOException {
         //遍历每个段，确定group_nums和这个段的数据集列表
-        //获得分段结果目录
+        //获得存放分段结果的目录
         long buildstart=System.nanoTime();
         String segementedDirectory=ConfigReader.getProperty("project-root-directory")+"/"+ConfigReader.getProperty("segementedDirectory");
 
@@ -24,12 +24,12 @@ public class Build {
         File folder=new File(segementedDirectory);
         File[] files=folder.listFiles();
         if(files!=null){
-            for(File file:files){//一个file代表处理一个段
+            for(File file:files){//一个file代表处理一个段  文件名 segement_1.txt
                 if(file.isFile()&& file.getName().startsWith("segement_") && file.getName().endsWith(".txt")){
                     // 提取文件名中的数字 是当前段的组数
                     int group_nums = extractSegmentNumber(file.getName());
 //                    System.out.println("Segment number: " + group_nums);
-                    //当前段存储的数据集的文件路径
+                    //当前段存储的数据集的kmer文件路径
                     ArrayList<String> samplesList=processTxtFile(file);
                     //当前段每个组需要的block数量
                     assert samplesList != null;
@@ -38,7 +38,7 @@ public class Build {
                     int chunk_size= Integer.parseInt(ConfigReader.getProperty("Block-max-size"));
                     Iterable<List<String>> chunkIterator = Utils.<String>chunks(samplesList, chunk_size);
                     for (List<String> chunk : chunkIterator) {//chunk为当前要处理的子列表，长度等于64，最后一个子列表的长度可能小于64
-                        for(int group_index=0;group_index<group_nums;group_index++){
+                        for(int group_index=0;group_index<group_nums;group_index++){//对于一个子列表，每个组创建一个Block
                             int block_index=cur_block_index+1;
                             Block block=new Block(block_index,chunk.size());
                             index.addBlock(block);

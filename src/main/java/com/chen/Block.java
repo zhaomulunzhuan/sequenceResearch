@@ -75,11 +75,11 @@ public class Block implements Serializable {
 
 
     public void addBF(){
-        // 新建一个布隆过滤器，并将其状态置为 false
-        statusList.add(false);
-        BloomFilterList.add(new BloomFilter());
-        // 增加布隆过滤器数量
         if(numsBloomFilter<max_numBloomFilter){
+            // 新建一个布隆过滤器，并将其状态置为 false
+            BloomFilterList.add(new BloomFilter());
+            statusList.add(false);
+            // 增加布隆过滤器数量
             numsBloomFilter++;
         }else {
             System.err.println(BlockIndex+"号索引块的布隆过滤器数量已达上限，不可添加");
