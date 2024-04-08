@@ -1,26 +1,36 @@
 package com.chen;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
 public class Delete {
     public static void main(String[] args) {
         Build.buildIndexFromSER();
         MetaData.outputMetadata();
-        Query.querykmer("GTTGTGGATAAAATATCGGCGAGTCGGTATA");
 
-//        index.printIndex();
-        deleteDataset("GCF_000006885.1_ASM688v1_genomic.fna");
-        deleteDataset("GCF_000006845.1_ASM684v1_genomic.fna");
+        deleteDatasets("D:\\SequenceSearch\\deleteDatasets.txt");
 
-//        deleteDataset("GCF_000006645.1_ASM664v1_genomic.fna");
-//        deleteDataset("GCF_000008105.1_ASM810v1_genomic.fna");
-//        deleteDataset("GCF_000007505.1_ASM750v1_genomic.fna");
-//        Query.querykmer("ACGTCTGGTTGCAAGAGACCGTGACAGGGGG");
-//        MetaData.outputMetadata();
-//        Insert.insertDatasets("Insert_3.txt");
-        Query.querykmer("GTTGTGGATAAAATATCGGCGAGTCGGTATA");
+
         MetaData.outputMetadata();
-//        index.printIndex();
+
+        Query.queryFile("D:\\SequenceSearch\\query.txt");
+
+    }
+
+    public static void deleteDatasets(String deleteFile){//deleteFile每行是要删除的数据集名
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(deleteFile));
+            String cur_dataset;
+            while ((cur_dataset = reader.readLine()) != null) {
+                // 处理每行中的文件路径
+                deleteDataset(cur_dataset);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void deleteDataset(String filename){

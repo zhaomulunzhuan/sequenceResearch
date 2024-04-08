@@ -32,6 +32,7 @@ public class Block implements Serializable {
         }
     }
 
+
     public void addElement(int bfIndex,String element){
         BloomFilterList.get(bfIndex).insertElement(element);
         statusList.set(bfIndex,true);
@@ -115,6 +116,8 @@ public class Block implements Serializable {
     // 输出函数，用于查看 Block 的信息
     public void printBlockInfo() {
         System.out.println("Block Index: " + BlockIndex);
+        System.out.println("空?"+isEmpty());
+        System.out.println("已满?"+isFull());
         System.out.println("Number of Bloom Filters: " + numsBloomFilter);
         System.out.println("Bloom Filter Status:");
         for (int i = 0; i < numsBloomFilter; i++) {

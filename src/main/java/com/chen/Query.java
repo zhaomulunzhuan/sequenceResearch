@@ -1,17 +1,73 @@
 package com.chen;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Query {
-    public static void main(String[] args) throws IOException {
-        Build.buildIndexFromSER();
-        Exactquerykmers("D:\\SequenceSearch\\query.txt");
+
+    public static void queryFile(String filePath){//查询一个文件里面的每个序列，并将每个序列的查询结果分别写入query_result.txt
+        String rootDirectory = ConfigReader.getProperty("project-root-directory");
+        String queryresultFile = rootDirectory+"/"+"query_result.txt";
+        try(
+                BufferedReader reader=new BufferedReader(new FileReader(filePath));
+                BufferedWriter writer=new BufferedWriter(new FileWriter(queryresultFile))){
+            String line;
+            String sequence="";
+            while ((line=reader.readLine())!=null){
+                if(line.startsWith(">")){
+                    //查询
+                    if (!sequence.isEmpty()){
+                        writer.write(sequence+"\n");
+                        ExactquerySequence(sequence,writer);
+                        writer.write(line+"\n");
+                    }else {
+                        writer.write(line+"\n");
+                    }
+                    sequence="";
+                }else {
+                    sequence+=line.trim().toUpperCase();
+                }
+            }
+            if(!sequence.isEmpty()){
+                writer.write(sequence + "\n");
+                //查询最后一段序列
+                ExactquerySequence(sequence,writer);
+            }
+        }catch (IOException e){
+            System.err.println(e);
+        }
+    }
+
+    public static void ExactquerySequence(String sequence, BufferedWriter writer) throws IOException {
+        int kmersize= Integer.parseInt(ConfigReader.getProperty("kmer-size"));
+        List<String> kmerList=new ArrayList<>();
+        // 切割sequence并将长度为kmersize的子字符串加入kmerList
+        for (int i = 0; i <= sequence.length() - kmersize; i++) {
+            String kmer = sequence.substring(i, i + kmersize);
+            kmerList.add(kmer);
+        }
+//        for (String kmer : kmerList) {
+//            System.out.println(kmer);
+//        }
+        List<String> result=new ArrayList<>(querykmer(kmerList.get(0)));
+        for(String kmer:kmerList){
+            result.retainAll(querykmer(kmer));
+        }
+//        System.out.println("包含输入文件中查询序列的数据集");
+//        for (String datasetName:result){
+//            System.out.println(datasetName);
+//        }
+        writer.write("查询结果\n");
+        // 将查询结果写入到结果文件
+        if (!result.isEmpty()){
+            for (String datasetName : result) {
+                writer.write(datasetName + "\n");
+            }
+        }else {
+            writer.write("未查询到包含查询序列的数据集"+"\n");
+        }
     }
 
     public static void Exactquerykmers(String filePath){//查询一个输入文件，文件里面是一段长序列，返回包含这个序列所有kmers的数据集

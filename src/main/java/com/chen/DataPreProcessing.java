@@ -34,7 +34,7 @@ public class DataPreProcessing {
         HyperLogLogEstimator.estimateKmerCardinalities(kmerdatasetsPath);
 
         //根据配置文件中给定的预期误报率FPR和哈希函数个数k，选择基础布隆过滤器能存储的元素基数b，确定基础布隆过滤器大小m
-        long b=745000;//假设 后面用函数确定
+        long b=650000;//假设 后面用函数确定
         double FPR= Double.parseDouble(ConfigReader.getProperty("FPR"));
         int k= Integer.parseInt(ConfigReader.getProperty("k"));
         long m= (long) (-1 * (k * b) / Math.log(1 - Math.pow(FPR, 1.0 / k)));
